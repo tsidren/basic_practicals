@@ -1,0 +1,10 @@
+Mirror_Hotel xyz-123 A 2000 100
+Sierra_Resort qwe-345 B 1000 70
+Daydream_Resort asd-243 C 600 50
+Enigma_Resort zxc-678 A 1500 150 
+Secret_Heights_Hotel tyu-345 C 500 100
+Lord's_Atoll_Hotel jki-241 C 600 70
+Crimson_Covert_Hotel bvn-367 B 1000 100 
+Brass_Island_Resort sde-213 A 2700  250
+Primal_Spire_Resort rfv-345 B 700 80
+Bronze_Pool_Resort 123-wsxc B 900 90
