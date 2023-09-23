@@ -20,6 +20,7 @@ int main()
     printf("\nelement found at index %d", binarySearch(a, 0, n, (n/2)+(n/4)+1));
     total_time = (clock()-start_time)/CLOCKS_PER_SEC;
     printf("\ntotal time for binary search is: %f ", total_time);
+    printf("\n---created by Shivanshu---");
     return 0;
 }
 

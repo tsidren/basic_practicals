@@ -29,6 +29,7 @@ int main()
 
     printf("after sorting ASC array: ");
     show(a, n);
+    printf("\n---created by Shivanshu---");
 }
 
 void arr_gen(int  arr[],int  till)

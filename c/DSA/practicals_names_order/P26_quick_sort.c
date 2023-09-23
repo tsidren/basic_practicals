@@ -51,7 +51,7 @@ int partition(int arr[], int low, int high)
     int i = (low - 1);
 
     for (int j = low; j <= high - 1; j++) 
-        if (arr[j] < pivot)    // change this for ASC '<' or DESC '>'
+        if (arr[j] > pivot)    // change this for ASC '<' or DESC '>'
             swap(&arr[++i], &arr[j]);
         
     swap(&arr[i+1], &arr[high]);
