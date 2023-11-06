@@ -39,14 +39,7 @@ def astar(graph, start, goal):
 
 def heuristic(node, goal):
     # Define a simple heuristic (e.g., distance between node and goal)
-    heuristic_values = {
-        'A': 1,
-        'B': 2,
-        'C': 3,
-        'D': 1,
-        'E': 2,
-        'F': 0,
-    }
+    heuristic_values = {'A': 1, 'B': 2, 'C': 3, 'D': 1, 'E': 2, 'F': 0}
     return heuristic_values[node]
 
 
@@ -60,7 +53,7 @@ def reconstruct_path(came_from, current_node):
 
 
 if __name__ == "__main__":
-    print("created by Shivanshu.")
+    print("created by shivanshu.")
     print("roll: 2100971520048")
     print("program no:5, A* algorithm.\n")
 

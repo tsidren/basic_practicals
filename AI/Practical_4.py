@@ -40,7 +40,7 @@ def best_first_search(graph, start, goal):
 if __name__ == "__main__":
     print("created by Shivanshu.")
     print("roll: 2100971520048")
-    print("program no:4, Best First Algorithm.\n")+
+    print("program no:4, Best First Algorithm.\n")
 
     start_node = input("enter the initial state: ")
     goal_node = input("enter the goal state: ")
