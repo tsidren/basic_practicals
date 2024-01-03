@@ -1,6 +1,12 @@
 import nltk
 from nltk.sentiment import SentimentIntensityAnalyzer
-nltk.download("vader_lexicon")
+
+
+print("created by Shivanshu.")
+print("roll: 2100971520048")
+print("program no:14, text classification for the given sentences using NLTK.\n")
+
+# nltk.download("vader_lexicon")
 
 sia = SentimentIntensityAnalyzer()
 

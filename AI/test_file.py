@@ -1,127 +1,50 @@
-import pygame
-import sys
+% Parameters
+L = 1e-3;    % Inductance (H)
+C = 100e-6;  % Capacitance (F)
+Vg = 100;    % Input voltage (V)
+R = 0.1;     % Load resistance (ohms)
+fs = 10e3;   % Switching frequency (Hz)
+T = 1/fs;    % Switching period (s)
+I_D = 5;     % Diode current amplitude (A)
+omega = 2*pi*fs;  % Angular frequency
 
-class TicTacToe:
-    def __init__(self):
-        # Initialize Pygame
-        pygame.init()
+% Initial conditions
+v_C = zeros(3, 1);
+i_L = zeros(3, 1);
+i_D = [I_D; I_D; I_D];
 
-        # Constants
-        self.WIDTH, self.HEIGHT = 600, 400
-        self.LINE_COLOR = (0, 0, 0)
-        self.LINE_WIDTH = 15
-        self.GRID_SIZE = 3
-        self.GRID_WIDTH = self.WIDTH // self.GRID_SIZE
-        self.GRID_HEIGHT = self.HEIGHT // self.GRID_SIZE
-        self.CIRCLE_RADIUS = self.GRID_WIDTH // 3
-        self.CIRCLE_COLOR = (0, 0, 255)
-        self.CROSS_COLOR = (255, 0, 0)
-        self.FONT_SIZE = 36
+% Simulation time
+t = 0:T:1;  % 1 second simulation
 
-        # Initialize the game window
-        self.screen = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
-        pygame.display.set_caption("Tic Tac Toe")
+% Main simulation loop
+for k = 1:length(t)-1
+    % Diode current equations
+    i_D = I_D * sin(omega * t(k) + [0; 2*pi/3; -2*pi/3]);
 
-        # Initialize variables
-        self.grid = [['' for _ in range(self.GRID_SIZE)] for _ in range(self.GRID_SIZE)]
-        self.player_turn = 'X'
-        self.game_over = False
-        self.winner = None
+    % Inductor voltage equations
+    v_L = Vg - v_C - i_D * R;
 
-        # Initialize fonts
-        self.font = pygame.font.Font(None, self.FONT_SIZE)
+    % Capacitor current equations
+    i_C = -i_L / R - i_D;
 
-    def draw_grid(self):
-        for row in range(1, self.GRID_SIZE):
-            pygame.draw.line(self.screen, self.LINE_COLOR, (0, row * self.GRID_HEIGHT), (self.WIDTH, row * self.GRID_HEIGHT), self.LINE_WIDTH)
-            pygame.draw.line(self.screen, self.LINE_COLOR, (row * self.GRID_WIDTH, 0), (row * self.GRID_WIDTH, self.HEIGHT), self.LINE_WIDTH)
+    % Update state variables using Euler's method
+    v_C = v_C + T/C * i_C;
+    i_L = i_L + T/L * v_L;
 
-    def draw_x(self, row, col):
-        x = col * self.GRID_WIDTH + self.GRID_WIDTH // 2
-        y = row * self.GRID_HEIGHT + self.GRID_HEIGHT // 2
-        pygame.draw.line(self.screen, self.CROSS_COLOR, (x - self.CIRCLE_RADIUS, y - self.CIRCLE_RADIUS), (x + self.CIRCLE_RADIUS, y + self.CIRCLE_RADIUS), self.LINE_WIDTH)
-        pygame.draw.line(self.screen, self.CROSS_COLOR, (x - self.CIRCLE_RADIUS, y + self.CIRCLE_RADIUS), (x + self.CIRCLE_RADIUS, y - self.CIRCLE_RADIUS), self.LINE_WIDTH)
+    % Output voltage
+    V_out(k) = sum(v_C);
+end
 
-    def draw_o(self, row, col):
-        x = col * self.GRID_WIDTH + self.GRID_WIDTH // 2
-        y = row * self.GRID_HEIGHT + self.GRID_HEIGHT // 2
-        pygame.draw.circle(self.screen, self.CIRCLE_COLOR, (x, y), self.CIRCLE_RADIUS, self.LINE_WIDTH)
+% Plotting
+figure;
+subplot(2, 1, 1);
+plot(t, V_out);
+title('Output Voltage');
+xlabel('Time (s)');
+ylabel('Voltage (V)');
 
-    def check_win(self, player):
-        for row in range(self.GRID_SIZE):
-            if all(self.grid[row][col] == player for col in range(self.GRID_SIZE)):
-                return True
-        for col in range(self.GRID_SIZE):
-            if all(self.grid[row][col] == player for row in range(self.GRID_SIZE)):
-                return True
-        if all(self.grid[i][i] == player for i in range(self.GRID_SIZE)) or all(self.grid[i][self.GRID_SIZE - 1 - i] == player for i in range(self.GRID_SIZE)):
-            return True
-        return False
-
-    def play(self):
-        while True:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    sys.exit()
-
-                if not self.game_over:
-                    if event.type == pygame.MOUSEBUTTONDOWN and not self.game_over:
-                        x, y = event.pos
-                        col = x // self.GRID_WIDTH
-                        row = y // self.GRID_HEIGHT
-
-                        if self.grid[row][col] == '':
-                            self.grid[row][col] = self.player_turn
-
-                            if self.check_win(self.player_turn):
-                                self.game_over = True
-                                self.winner = self.player_turn
-                            elif all(self.grid[i][j] != '' for i in range(self.GRID_SIZE) for j in range(self.GRID_SIZE)):
-                                self.game_over = True
-                                self.winner = 'Draw'
-
-                            self.player_turn = 'O' if self.player_turn == 'X' else 'X'
-
-            self.screen.fill((255, 255, 255))
-            self.draw_grid()
-
-            for row in range(self.GRID_SIZE):
-                for col in range(self.GRID_SIZE):
-                    if self.grid[row][col] == 'X':
-                        self.draw_x(row, col)
-                    elif self.grid[row][col] == 'O':
-                        self.draw_o(row, col)
-
-            if self.game_over:
-                if self.winner == 'Draw':
-                    result_text = "It's a Draw!"
-                else:
-                    result_text = f"Player {self.winner} wins!"
-                text_surface = self.font.render(result_text, True, (0, 0, 0))
-                text_rect = text_surface.get_rect(center=(self.WIDTH // 2, self.HEIGHT // 2))
-                self.screen.blit(text_surface, text_rect)
-
-                # Display a message to press Enter to close the window
-                press_enter_text = self.font.render("Press Enter to close", True, (0, 0, 0))
-                press_enter_rect = press_enter_text.get_rect(center=(self.WIDTH // 2, self.HEIGHT - 30))
-                self.screen.blit(press_enter_text, press_enter_rect)
-
-            else:
-                turn_text = f"Player {self.player_turn}'s turn"
-                text_surface = self.font.render(turn_text, True, (0, 0, 0))
-                text_rect = text_surface.get_rect(center=(self.WIDTH + 100, self.HEIGHT // 2))
-                self.screen.blit(text_surface, text_rect)
-
-            pygame.display.update()
-
-            # Check for Enter key press to close the window
-            keys = pygame.key.get_pressed()
-            if keys[pygame.K_RETURN]:
-                pygame.quit()
-                sys.exit()
-
-if __name__ == "__main__":
-    game = TicTacToe()
-    game.play()
-
+subplot(2, 1, 2);
+plot(t(1:end-1), diff(V_out)/T);
+title('Output Current');
+xlabel('Time (s)');
+ylabel('Current (A)');

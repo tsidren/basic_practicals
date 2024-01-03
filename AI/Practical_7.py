@@ -1,5 +1,7 @@
 import random
-print("created by shivanshu.")
+print("created by Shivanshu.")
+print("roll: 2100971520048")
+print("program no:7, hang-man game.\n")
 name = input("What is your name? ")
 print("Good Luck ! ", name)
 words = ['rainbow', 'computer', 'science', 'programming',
